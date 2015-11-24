@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+		<title>Title</title>
+		<script src="jquery.js"></script>
+</head>
+	<body>
+		<h1>Crapstagram</h1>
+		<p>Like instagram, but with one crappy filter.</p>
+		<div class="fileinputs">
+			<input type="file" id="file-input" class="file" value="Upload!"> 
+		
+		</div>
+
+		<canvas id="canvas" width="800px" height="800px"></canvas>
+		<script>
+		$(function() {
+		    $('#file-input').change(function(e) {
+		        var file = e.target.files[0];
+
+		        var reader = new FileReader();
+		        reader.onload = fileOnload;
+		        reader.readAsDataURL(file);        
+		    });
+
+		    function fileOnload(e) {
+		      // Create an image
+          var $img = $('<img>', { src: e.target.result, class : 'shot' });
+          
+          // Load it into the body when it's ready
+		     	$img.load(function() {
+		     		$('body').append($img);
+
+		     		var width = $img.width(),
+		     			height = $img.height(),
+						  canvas = $('#canvas')[0],
+						  context = canvas.getContext('2d');
+						
+            console.log(width,height);
+						canvas.width = width;
+						canvas.height = height;
+            
+            // hide it
+					   $('img.shot').hide();
+            
+            // Draw to canvas
+			       context.drawImage($img[0], 0, 0);
+
+			        // modify it
+			       var pixels = context.getImageData(0,0,canvas.width,canvas.height);
+              // loop over every pixel and change the RGB values
+			        for (i = 0; i < pixels.data.length; i=i+4) {
+			        	pixels.data[i + 0] = pixels.data[i + 0] + 200 ;
+			        	pixels.data[i + 1] = pixels.data[i + 1] * 2;
+			        	pixels.data[i + 2] = pixels.data[i + 2] - 50;
+			        }
+              // put it back into the canvas!
+			        context.putImageData(pixels,0,0);
+		     	});
+
+
+		    }
+		});
+		</script>​
+
+		<style type="text/css">
+			body {
+				font-family: Arial, Helvetica, sans-serif;
+				text-align:center;
+
+			}
+			h1 {
+				width:100%;
+				font-size:150px;
+				text-align:center;
+				margin:0;
+				;
+			}
+			p {
+				font-size:45px;
+			}
+
+			input[type=file] {
+				background:#BADA55;
+				font-size:40px;
+				text-align: center;
+				display:block;
+				padding:5%;
+				width:90%;
+			}
+
+			canvas {
+				width:100%;
+				clear:both;
+			}
+
+
+		</style>
+	</body>
+</html>
